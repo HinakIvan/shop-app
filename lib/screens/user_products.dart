@@ -11,13 +11,16 @@ class UserProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context);
-    return Scaffold(drawer: AppDrawer(),
+    return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: const Text('Your Products'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {Navigator.of(context).pushNamed(EditProductScreen.link);},
+            onPressed: () {
+              Navigator.of(context).pushNamed(EditProductScreen.link);
+            },
           )
         ],
       ),
@@ -25,7 +28,7 @@ class UserProductsScreen extends StatelessWidget {
         padding: EdgeInsets.all(8),
         child: ListView.builder(
           itemBuilder: (_, i) => Column(children: [
-            UserProductItem(
+            UserProductItem(productsData.items[i].id,
                 productsData.items[i].title, productsData.items[i].imageUrl),
             Divider()
           ]),
