@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products.dart';
-
 import '../providers/product.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -24,14 +23,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'title': '',
     'description': '',
     'price': '',
-    'imageUrl': ''
+    'imageUrl': '',
   };
   var _isInit = true;
 
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
-
     super.initState();
   }
 
@@ -40,8 +38,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_isInit) {
     final productId = ModalRoute.of(context)!.settings.arguments as String;
       if (productId != null) {
-        _editedProduct = Provider.of<Products>(context, listen: false)
-            .findById(productId.toString());
+        _editedProduct = Provider.of<Products>(context, listen: false).findById(productId.toString());
         _initValues = {
           'title': _editedProduct.title,
           'price': _editedProduct.price.toString(),
@@ -74,7 +71,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
               !_imageUrlController.text.endsWith('.jpeg'))) {
         return;
       }
-
       setState(() {});
     }
   }
@@ -87,10 +83,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _form.currentState!.save();
     if(_editedProduct.id !=null){
       Provider.of<Products>(context, listen: false).updateProduct(_editedProduct.id,_editedProduct);
-
     }else{
       Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
-
     }
     Navigator.of(context).pop();
   }
@@ -200,7 +194,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     margin: EdgeInsets.only(top: 8, right: 10),
                     decoration: BoxDecoration(
                         border: Border.all(width: 1, color: Colors.grey)),
-                    child: _imageUrlController.text.isNotEmpty
+                    child: _imageUrlController.text.isEmpty
                         ? Text('Enter a URL')
                         : FittedBox(
                             child: Image.network(_imageUrlController.text),
