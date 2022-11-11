@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products.dart';
+
 import '../providers/product.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -17,7 +18,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
   var _editedProduct = Product(
-      id: null.toString(), title: '', price: 0, description: '', imageUrl: '');
+      id: null.toString(),
+      title: '',
+      price: 0,
+      description: '',
+      imageUrl: '');
 
   var _initValues = {
     'title': '',
@@ -34,11 +39,39 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   @override
+  void dispose() {
+    _imageUrlFocusNode.removeListener(_updateImageUrl);
+    _priceFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+    _imageUrlController.dispose();
+    _imageUrlFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _updateImageUrl() {
+    if (!_imageUrlFocusNode.hasFocus) {
+      if ((!_imageUrlController.text.startsWith('http') &&
+          !_imageUrlController.text.startsWith('https')) ||
+          (!_imageUrlController.text.endsWith('.png') &&
+              !_imageUrlController.text.endsWith('.jpg') &&
+              !_imageUrlController.text.endsWith('.jpeg'))) {
+        return;
+      }
+
+      setState(() {});
+    }
+  }
+
+  @override
   void didCangeDependencies() {
     if (_isInit) {
-    final productId = ModalRoute.of(context)!.settings.arguments as String;
+      final productId = ModalRoute
+          .of(context)
+          ?.settings
+          .arguments as String;
       if (productId != null) {
-        _editedProduct = Provider.of<Products>(context, listen: false).findById(productId.toString());
+        _editedProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
         _initValues = {
           'title': _editedProduct.title,
           'price': _editedProduct.price.toString(),
@@ -52,42 +85,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.didChangeDependencies();
   }
 
-  @override
-  void dispose() {
-    _imageUrlFocusNode.removeListener(_updateImageUrl);
-    _priceFocusNode.dispose();
-    _descriptionFocusNode.dispose();
-    _imageUrlController.dispose();
-    _imageUrlFocusNode.dispose();
-    super.dispose();
-  }
-
-  void _updateImageUrl() {
-    if (!_imageUrlFocusNode.hasFocus) {
-      if ((!_imageUrlController.text.startsWith('http') &&
-              !_imageUrlController.text.startsWith('https')) ||
-          (!_imageUrlController.text.endsWith('.png') &&
-              !_imageUrlController.text.endsWith('.jpg') &&
-              !_imageUrlController.text.endsWith('.jpeg'))) {
-        return;
-      }
-      setState(() {});
-    }
-  }
-
   void _saveForm() {
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
     }
     _form.currentState!.save();
-    if(_editedProduct.id !=null){
-      Provider.of<Products>(context, listen: false).updateProduct(_editedProduct.id,_editedProduct);
-    }else{
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    if (_editedProduct.id != null) {
+      Provider.of<Products>(context, listen: false).updateProduct(
+          _editedProduct.id, _editedProduct);
+      Navigator.of(context).pop();
     }
-    Navigator.of(context).pop();
-  }
+
+  else{Provider.of<Products>(context,listen: false).addProduct( _editedProduct);}
+  Navigator.of(context).pop();}
 
   @override
   Widget build(BuildContext context) {
@@ -129,11 +140,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       price: _editedProduct.price,
                       description: _editedProduct.description,
                       imageUrl: _editedProduct.imageUrl,
-                      id: _editedProduct.id,isFavorite: _editedProduct.isFavorite);
+                      id: _editedProduct.id,
+                      isFavorite: _editedProduct.isFavorite);
                 },
               ),
-              TextFormField(
-                  initialValue: _initValues['price'],
+              TextFormField(initialValue: _initValues['price'],
                   decoration: InputDecoration(labelText: 'Price'),
                   keyboardType: TextInputType.number,
                   focusNode: _priceFocusNode,
@@ -160,10 +171,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         price: double.parse(value.toString()),
                         description: _editedProduct.description,
                         imageUrl: _editedProduct.imageUrl,
-                        id: _editedProduct.id,isFavorite: _editedProduct.isFavorite);
+                        id: _editedProduct.id,
+                        isFavorite: _editedProduct.isFavorite);
                   }),
-              TextFormField(
-                  initialValue: _initValues['description'],
+              TextFormField(initialValue: _initValues['description'],
                   decoration: InputDecoration(labelText: 'Description'),
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
@@ -183,7 +194,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         price: _editedProduct.price,
                         description: value.toString(),
                         imageUrl: _editedProduct.imageUrl,
-                        id: _editedProduct.id,isFavorite: _editedProduct.isFavorite);
+                        id: _editedProduct.id,
+                        isFavorite: _editedProduct.isFavorite);
                   }),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -197,9 +209,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: _imageUrlController.text.isEmpty
                         ? Text('Enter a URL')
                         : FittedBox(
-                            child: Image.network(_imageUrlController.text),
-                            fit: BoxFit.cover,
-                          ),
+                      child: Image.network(_imageUrlController.text),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Expanded(
                     child: TextFormField(
@@ -230,7 +242,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               price: _editedProduct.price,
                               description: _editedProduct.description,
                               imageUrl: value.toString(),
-                              id: _editedProduct.id,isFavorite: _editedProduct.isFavorite);
+                              id: _editedProduct.id,
+                              isFavorite: _editedProduct.isFavorite);
                         }),
                   )
                 ],
