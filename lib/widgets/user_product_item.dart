@@ -20,7 +20,7 @@ class UserProductItem extends StatelessWidget {
         child: Row(
           children: <Widget>[
             IconButton(
-              onPressed: () {Navigator.of(context).pushNamed(EditProductScreen.link, arguments: id );},
+              onPressed: () {Navigator.of(context).pushNamed(EditProductScreen.link,arguments: id );},
               icon: Icon(Icons.edit),
               color: Theme.of(context).primaryColor,
             ),
