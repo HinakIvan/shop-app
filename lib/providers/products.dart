@@ -65,4 +65,9 @@ void updateProduct(String id,Product newProduct){
     print('...');
   }
 }
+
+void deleteProduct(String id){
+    _items.removeWhere((prod) => prod.id ==id );
+    notifyListeners();
+}
 }
