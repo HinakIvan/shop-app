@@ -84,7 +84,10 @@ void didCangeDependencies() {
       return;
     }
     _form.currentState!.save();
-   Provider.of<Products>(context,listen: false).addProduct(_editedProduct);
+    // if(_editedProduct.id != null) {
+    //   Provider.of<Products>(context,listen: false).updateProduct(_editedProduct.id,_editedProduct);
+    // }else{
+      Provider.of<Products>(context,listen: false).addProduct(_editedProduct);
    Navigator.of(context).pop();
   }
 
@@ -127,7 +130,7 @@ void didCangeDependencies() {
                       price: _editedProduct.price,
                       description: _editedProduct.description,
                       imageUrl: _editedProduct.imageUrl,
-                      id: null.toString());
+                      id: _editedProduct.id,isFavorite:_editedProduct.isFavorite);
                 },
               ),
               TextFormField(initialValue: _initValues['price'],
@@ -157,7 +160,7 @@ void didCangeDependencies() {
                         price: double.parse(value.toString()),
                         description: _editedProduct.description,
                         imageUrl: _editedProduct.imageUrl,
-                        id: null.toString());
+                        id: _editedProduct.id,isFavorite:_editedProduct.isFavorite);
                   }),
               TextFormField(initialValue: _initValues['description'],
                   decoration: InputDecoration(labelText: 'Description'),
@@ -179,7 +182,7 @@ void didCangeDependencies() {
                         price: _editedProduct.price,
                         description: value.toString(),
                         imageUrl: _editedProduct.imageUrl,
-                        id: null.toString());
+                        id: _editedProduct.id,isFavorite:_editedProduct.isFavorite);
                   }),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -226,7 +229,7 @@ void didCangeDependencies() {
                               price: _editedProduct.price,
                               description: _editedProduct.description,
                               imageUrl: value.toString(),
-                              id: null.toString());
+                              id: _editedProduct.id,isFavorite:_editedProduct.isFavorite);
                         }),
                   )
                 ],
