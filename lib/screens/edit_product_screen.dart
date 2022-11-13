@@ -27,6 +27,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   'imageUrl': '',
 };
 var _isInit = true;
+var _isLoading = false;
 
   @override
   void initState() {
@@ -80,6 +81,7 @@ void didCangeDependencies() {
 
   void _saveForm() {
     final isValid = _form.currentState!.validate();
+    setState((){_isLoading = true;});
     if (!isValid) {
       return;
     }
@@ -87,8 +89,8 @@ void didCangeDependencies() {
     // if(_editedProduct.id != null) {
     //   Provider.of<Products>(context,listen: false).updateProduct(_editedProduct.id,_editedProduct);
     // }else{
-      Provider.of<Products>(context,listen: false).addProduct(_editedProduct);
-   Navigator.of(context).pop();
+      Provider.of<Products>(context,listen: false).addProduct(_editedProduct).then((_) {  setState((){_isLoading = false;});Navigator.of(context).pop();});
+
   }
 
   @override
@@ -104,7 +106,7 @@ void didCangeDependencies() {
               icon: Icon(Icons.save))
         ],
       ),
-      body: Padding(
+      body: _isLoading ? Center(child: CircularProgressIndicator(),): Padding(
         padding: EdgeInsets.all(15),
         child: Form(
           key: _form,

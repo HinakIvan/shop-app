@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'product.dart';
 
 class Products with ChangeNotifier {
@@ -41,7 +42,8 @@ class Products with ChangeNotifier {
   List<Product> get items {
     return [..._items];
   }
-  List <Product>get favoriteItem{
+
+  List<Product> get favoriteItem {
     return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
 
@@ -49,25 +51,44 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  void addProduct(Product product) {
-    final newProduct = Product(title:product.title,description: product.description,price: product.price,imageUrl: product.imageUrl,id: DateTime.now().toString() );
-    _items.add(newProduct);
-    // _items.insert(0, newProduct);
-    notifyListeners();
+  Future <void > addProduct(Product product) {
+      var url = Uri.https(
+        'shop-app-flutter-a42ca-default-rtdb.firebaseio.com',
+        '/products.json');
+    return http.post(url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+          'isFavorite': product.isFavorite
+        })).then((response) {
+          print(json.decode(response.body));
+      final newProduct = Product(
+          title: product.title,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          id: json.decode(response.body)['name']);
+      _items.add(newProduct);
+      // _items.insert(0, newProduct);
+      notifyListeners();
+    });
+
   }
 
-void updateProduct(String id,Product newProduct){
-  final productIndex = _items.indexWhere((prod) => prod.id ==id);
-  if(productIndex >=0){
-  _items[productIndex]=newProduct;
-  notifyListeners();}
-  else {
-    print('...');
+  void updateProduct(String id, Product newProduct) {
+    final productIndex = _items.indexWhere((prod) => prod.id == id);
+    if (productIndex >= 0) {
+      _items[productIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print('...');
+    }
   }
-}
 
-void deleteProduct(String id){
-    _items.removeWhere((prod) => prod.id ==id );
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
-}
+  }
 }
