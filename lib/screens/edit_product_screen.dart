@@ -79,7 +79,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.didChangeDependencies();
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState!.validate();
     setState(() {
       _isLoading = true;
@@ -91,10 +91,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // if(_editedProduct.id != null) {
     //   Provider.of<Products>(context,listen: false).updateProduct(_editedProduct.id,_editedProduct);
     // }else{
-    Provider.of<Products>(context, listen: false)
-        .addProduct(_editedProduct)
-        .catchError((error) {
-      return showDialog<Null>(
+    try {
+      await Provider.of<Products>(context, listen: false)
+          .addProduct(_editedProduct);
+    } catch (error) {
+     await showDialog<Null>(
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('An error occured'),
@@ -107,12 +108,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       child: Text('Okay'))
                 ],
               ));
-    }).then((_) {
+    } finally {
       setState(() {
         _isLoading = false;
       });
       Navigator.of(context).pop();
-    });
+    }
   }
 
   @override
