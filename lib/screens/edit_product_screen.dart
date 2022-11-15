@@ -68,8 +68,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
             .findById(productId.toString());
         _initValues = {
           'title': _editedProduct.title,
-          'price': _editedProduct.price.toString(),
           'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
           'imageUrl': ''
         };
         _imageUrlController.text = _editedProduct.imageUrl;
@@ -88,32 +88,43 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState!.save();
-    // if(_editedProduct.id != null) {
-    //   Provider.of<Products>(context,listen: false).updateProduct(_editedProduct.id,_editedProduct);
-    // }else{
-    try {
-      await Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct);
-    } catch (error) {
-     await showDialog<Null>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('An error occured'),
-                content: Text('Something went wrong'),
-                actions: <Widget>[
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                      },
-                      child: Text('Okay'))
-                ],
-              ));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
-    }
+    setState(() {
+      _isLoading = true;
+    });
+    // if (_editedProduct.id != null) {
+    //   await Provider.of<Products>(context, listen: false).updateProduct(
+    //       _editedProduct.id, _editedProduct);}
+    //  else {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog<Null>(
+            context: context,
+            builder: (ctx) =>
+                AlertDialog(
+                  title: Text('An error occured'),
+                  content: Text('Something went wrong'),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: Text('Okay'))
+                  ],
+                ));
+      }
+      // finally {
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      //   Navigator.of(context).pop();
+      // }
+    // }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
   }
 
   @override
