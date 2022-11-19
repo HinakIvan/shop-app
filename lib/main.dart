@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/orders.dart';
 import 'package:shop_app/providers/products.dart';
+import 'package:shop_app/screens/auth_screen.dart';
 import 'package:shop_app/screens/cart_screen.dart';
 import 'package:shop_app/screens/edit_product_screen.dart';
 import 'package:shop_app/screens/orders.screen.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
+      providers: [ChangeNotifierProvider(create:(context)=> Auth()),
         ChangeNotifierProvider(
           create: (ctx) => Products(),
         ),
@@ -28,13 +30,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (context)=>Orders())
       ],
-      child: MaterialApp(
+      child: Consumer<Auth>(builder:(context,auth,_)=>MaterialApp(
         title: 'My Shop',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: ProductsOverviewScreen(),
-        initialRoute: ProductsOverviewScreen.link,
+        home: AuthScreen(),
         routes: {
           ProductsOverviewScreen.link: (context) => ProductsOverviewScreen(),
           ProductDetailScreen.link: (context) => ProductDetailScreen(),
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
           UserProductsScreen.link:(context)=>UserProductsScreen(),
           EditProductScreen.link:(context)=>EditProductScreen()
         },
-      ),
+      ),)
     );
   }
 }
